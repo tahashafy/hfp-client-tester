@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HFP Client Tester</string>
+    <string name="run_diagnostics">Run Diagnostics</string>
+    <string name="copy_report">Copy Report</string>
+    <string name="section_devices">Bluetooth Devices</string>
+    <string name="section_profiles">Bluetooth Profiles</string>
+    <string name="section_hfp">HFP Client Status</string>
+    <string name="section_permissions">Permissions and Errors</string>
+    <string name="report_copied">Report copied to clipboard</string>
+    <string name="no_report_yet">Run diagnostics first</string>
+</resources>
