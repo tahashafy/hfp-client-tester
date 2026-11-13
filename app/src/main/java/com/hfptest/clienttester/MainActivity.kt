@@ -21,6 +21,23 @@ import java.util.Date
 import java.util.Locale
 
 /**
+ * BluetoothProfile.HEADSET_CLIENT (16) and BluetoothProfile.PBAP_CLIENT (17)
+ * exist in the real Android framework but are annotated @SystemApi, so their
+ * symbolic constants are stripped from the PUBLIC compileSdk stub jar and
+ * will not resolve at compile time against the public SDK. The integer
+ * values themselves are stable, documented AOSP constants (see
+ * frameworks/base/core/java/android/bluetooth/BluetoothProfile.java), and
+ * BluetoothAdapter.getProfileProxy() is a fully public API that accepts any
+ * int profile id -- only the symbolic name is hidden, not the capability.
+ * We reference them by literal value here, which is itself informative: the
+ * fact that the constant is hidden from third-party compilation is part of
+ * why this app has to fall back to getProfileProxy()'s runtime behavior
+ * (Layer 2/3) rather than any compile-time guarantee (Layer 1).
+ */
+private const val PROFILE_HEADSET_CLIENT = 16
+private const val PROFILE_PBAP_CLIENT = 17
+
+/**
  * HFP Client Tester
  *
  * A read-only diagnostic tool that investigates whether this device exposes
@@ -96,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         // Clean up the profile proxy if one was ever obtained.
         try {
             headsetClientProxy?.let { proxy ->
-                bluetoothAdapterRef?.closeProfileProxy(BluetoothProfile.HEADSET_CLIENT, proxy)
+                bluetoothAdapterRef?.closeProfileProxy(PROFILE_HEADSET_CLIENT, proxy)
             }
         } catch (_: Exception) {
             // Best-effort cleanup only.
@@ -219,9 +236,9 @@ class MainActivity : AppCompatActivity() {
         profilesSb.append('\n')
         profilesSb.append(describeKnownProfileConstant("A2DP", BluetoothProfile.A2DP))
         profilesSb.append('\n')
-        profilesSb.append(describeKnownProfileConstant("HEADSET_CLIENT (HFP Client)", BluetoothProfile.HEADSET_CLIENT))
+        profilesSb.append(describeKnownProfileConstant("HEADSET_CLIENT (HFP Client)", PROFILE_HEADSET_CLIENT))
         profilesSb.append('\n')
-        profilesSb.append(describeKnownProfileConstant("PBAP_CLIENT", BluetoothProfile.PBAP_CLIENT))
+        profilesSb.append(describeKnownProfileConstant("PBAP_CLIENT", PROFILE_PBAP_CLIENT))
         profilesText.text = profilesSb.toString()
 
         // --- HFP Client specific investigation ---
@@ -269,7 +286,7 @@ class MainActivity : AppCompatActivity() {
                             latch.countDown()
                         }
                     },
-                    BluetoothProfile.HEADSET_CLIENT
+                    PROFILE_HEADSET_CLIENT
                 )
             } catch (e: SecurityException) {
                 connectError = "SecurityException: ${e.message}"
